@@ -1,0 +1,216 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f3f3f3;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.play-area {
+    display: flex;
+    justify-content: center; /* Center align the coin and multiplier */
+    align-items: center;
+    gap: 20px; /* Space between multiplier and coin */
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.multiplier {
+    text-align: center;
+    font-size: 1.2em;
+    position: absolute;
+    left: 10%; /* Adjust position to the left */
+}
+
+#multiplier-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.coin-container {
+    width: 250px;
+    height: 250px;
+    perspective: 1000px;
+    margin: 0 auto; /* Center the coin */
+}
+
+.coin {
+    width: 250px;
+    height: 250px;
+    background: #ffcc00;
+    border-radius: 50%;
+    border: 5px solid #b8860b;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    animation: none;
+    margin: 0 auto; /* Ensure centering within the parent */
+}
+
+.coin::before,
+.coin::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #f2f2f2;
+    border: 4px solid #b8860b;
+    top: 0;
+    left: 0;
+    transform: translateZ(10px);
+}
+
+.coin::after {
+    background: #333;
+    transform: translateZ(-10px) rotateY(180deg);
+}
+
+.bet-menu {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.bet-menu p {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.bet-input-container {
+    display: inline-flex; /* Keep elements inline */
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Space between the input and buttons */
+    margin-bottom: 15px;
+}
+
+#bet-amount {
+    width: 140px; /* Make the input field wider */
+    height: 35px; /* Ensure consistent height */
+    text-align: center; /* Center text inside the input */
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#doubler-btn, #divider-btn {
+    padding: 5px 10px;
+    font-size: 1em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 35px; /* Match the height of the input field */
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center; /* Align button content vertically */
+    justify-content: center; /* Center text inside the button */
+}
+
+#doubler-btn:hover, #divider-btn:hover {
+    background-color: #0056b3;
+}
+
+#doubler-btn:disabled, #divider-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.bet-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.bet-buttons button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.bet-buttons button:hover {
+    background-color: #0056b3;
+}
+
+.bet-button {
+    margin-top: 20px;
+}
+
+.bet-button button {
+    font-size: 1.2em;
+    padding: 15px 30px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.bet-button button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+.buttons button {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.5; /* Less visible initially */
+    background-color: #007bff;
+    color: white;
+    transition: opacity 0.3s, cursor 0.3s;
+}
+
+.buttons button.active {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Coin Animation */
+@keyframes flip {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(3600deg); }
+}
+
+.cash-out {
+    margin-left: 10px;
+    font-size: 1em;
+    color: #28a745;
+    font-weight: bold;
+}

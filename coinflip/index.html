@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coinflip Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Coinflip Game</h1>
+
+        <div class="play-area">
+            <!-- Multiplier Display -->
+            <div class="multiplier">
+                <p>Multiplier</p>
+                <div id="multiplier-value">0x</div>
+            </div>
+
+            <!-- Coin Display -->
+            <div class="coin-container">
+                <div id="coin" class="coin"></div>
+            </div>
+        </div>
+
+        <!-- Betting Section -->
+        <div class="bet-menu">
+            <p>Selected Amount (SOL):</p>
+            <div class="bet-input-container">
+                <input type="number" id="bet-amount" placeholder="Enter amount" step="0.01" min="0.01" oninput="updateBetAmount()" />
+                <button id="doubler-btn" onclick="doubleBetAmount()">2x</button>
+                <button id="divider-btn" onclick="halveBetAmount()">½</button>
+            </div>
+            <div class="bet-buttons">
+                <button onclick="setBetAmount(0.1)">0.1</button>
+                <button onclick="setBetAmount(0.5)">0.5</button>
+                <button onclick="setBetAmount(1)">1</button>
+                <button onclick="setBetAmount(5)">5</button>
+            </div>
+        </div>
+
+        <!-- Bet or Cash Out Button -->
+        <div class="bet-button">
+            <button id="bet-btn" onclick="placeBet()">Bet</button>
+            <span id="cash-out-amount"></span>
+        </div>
+
+        <!-- Buttons for Heads and Tails -->
+        <div class="buttons">
+            <button id="heads-btn" class="inactive" onclick="selectSide('hlava')" disabled>Heads</button>
+            <button id="tails-btn" class="inactive" onclick="selectSide('orel')" disabled>Tails</button>
+        </div>
+
+        <!-- Result -->
+        <div id="result" class="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
