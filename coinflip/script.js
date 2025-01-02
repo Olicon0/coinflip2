@@ -242,78 +242,59 @@ function halveBetAmount() {
 
 
 
-import React, { useEffect, useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
-import * as anchor from "@project-serum/anchor";
+// Import Solana Web3.js library
+const { Connection, clusterApiUrl, PublicKey } = solanaWeb3;
 
-const SOLANA_HOST = clusterApiUrl("devnet");
-const connection = new anchor.web3.Connection(SOLANA_HOST);
+// Global variables
+let walletAddress = null;
+let walletBalance = 0;
 
-const WalletConnection = () => {
-    const wallet = useWallet();
-    const [balance, setBalance] = useState(null);
+// Connect to Phantom Wallet
+async function connectWallet() {
+    if (!window.solana || !window.solana.isPhantom) {
+        alert("Phantom Wallet not found! Please install it from https://phantom.app/");
+        return;
+    }
 
-    useEffect(() => {
-        const fetchBalance = async () => {
-            if (wallet?.publicKey) {
-                try {
-                    const lamports = await connection.getBalance(wallet.publicKey);
-                    setBalance((lamports / LAMPORTS_PER_SOL).toFixed(3));
-                } catch (error) {
-                    console.error("Failed to fetch balance:", error);
-                }
-            }
-        };
+    try {
+        // Request connection
+        const response = await window.solana.connect({
+            onlyIfTrusted: false, // Force Phantom to ask for permission
+        });
 
-        fetchBalance();
-    }, [wallet?.publicKey]);
+        // Save the wallet address
+        walletAddress = response.publicKey.toString();
+        console.log("Wallet Address:", walletAddress);
 
-    return (
-        <div>
-            {wallet.connected ? (
-                <div>
-                    <p>Wallet Address: {wallet.publicKey.toString()}</p>
-                    <p>Balance: {balance ? `${balance} SOL` : "Loading..."}</p>
-                </div>
-            ) : (
-                <p>Wallet not connected</p>
-            )}
-        </div>
-    );
-};
+        // Update the UI
+        document.getElementById("wallet-address").textContent = `Wallet Address: ${walletAddress}`;
 
-export default WalletConnection;
-import React from "react";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import {
-    PhantomWalletAdapter,
-    SolflareWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import WalletConnection from "./WalletConnection"; // Import your WalletConnection component
-import "@solana/wallet-adapter-react-ui/styles.css"; // Default styles for wallet adapter
+        // Fetch wallet balance
+        await fetchBalance();
+    } catch (err) {
+        console.error("Wallet connection failed:", err);
+        alert("Connection request failed. Please try again.");
+    }
+}
 
-const App = () => {
-    const network = WalletAdapterNetwork.Devnet;
-    const endpoint = clusterApiUrl(network);
+// Fetch Wallet Balance using getBalance
+async function fetchBalance() {
+    try {
+        const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed"); // Connect to Solana Mainnet
+        const publicKey = new PublicKey(walletAddress);
 
-    const wallets = [
-        new PhantomWalletAdapter(),
-        new SolflareWalletAdapter(),
-    ];
+        // Use getBalance RPC method to fetch balance
+        const balance = await connection.getBalance(publicKey); // Returns balance in lamports
+        walletBalance = balance / 1e9; // Convert lamports to SOL
 
-    return (
-        <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
-                <WalletModalProvider>
-                    <WalletConnection />
-                </WalletModalProvider>
-            </WalletProvider>
-        </ConnectionProvider>
-    );
-};
+        // Update the wallet balance on the page
+        document.getElementById("wallet-balance").textContent = `Wallet Balance: ${walletBalance.toFixed(3)} SOL`;
+        console.log("Wallet Balance (SOL):", walletBalance);
+    } catch (err) {
+        console.error("Failed to fetch wallet balance:", err);
+        document.getElementById("wallet-balance").textContent = "Wallet Balance: Error";
+    }
+}
 
-export default App;
-
+// Add event listener to the Connect Wallet button
+document.getElementById("connect-wallet-btn").addEventListener("click", connectWallet);
