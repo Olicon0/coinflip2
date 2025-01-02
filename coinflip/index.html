@@ -5,22 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coinflip Game</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.66.2/lib/index.iife.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Coinflip Game</h1>
 
-        
         <div class="play-area">
             <!-- Multiplier Display -->
             <div class="multiplier">
                 <p>Multiplier</p>
                 <div id="multiplier-value">0x</div>
             </div>
+        <!-- Phantom Wallet Section -->
+        <div class="wallet-section">
+            <button id="connect-wallet-btn">Connect Wallet</button>
+            <p id="wallet-address">Wallet Address: Not Connected</p>
+            <p id="wallet-balance">Wallet Balance: N/A</p>
+        </div>
 
             <!-- Coin Display -->
             <div class="coin-container">
-                <div id="coin" class="coin"></div>
+                <div id="coin" class="coin">
+                    <div class="coin-front">PATCO</div>
+                    <div class="coin-back">MATCO</div>
+                </div>
+                <div id="cashout-display" class="hidden">
+                    <p id="cashout-multiplier"></p>
+                    <p id="cashout-profit"></p>
+                </div>
+            </div>
+
+            <!-- Series Counter -->
+            <div class="series-counter">
+                <p>Series</p>
+                <div id="series-value">0</div>
             </div>
         </div>
 
@@ -58,3 +77,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
