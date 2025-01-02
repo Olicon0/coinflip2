@@ -257,69 +257,45 @@ async function connectWallet() {
     }
 
     try {
-        // Connect to Phantom Wallet
-        const response = await window.solana.connect();
-        walletAddress = response.publicKey.toString();
+        // Request connection
+        const response = await window.solana.connect({
+            onlyIfTrusted: false, // Force Phantom to ask for permission
+        });
 
-        // Show wallet address
+        // Save the wallet address
+        walletAddress = response.publicKey.toString();
+        console.log("Wallet Address:", walletAddress);
+
+        // Update the UI
         document.getElementById("wallet-address").textContent = `Wallet Address: ${walletAddress}`;
 
-        // Fetch and display wallet balance
+        // Fetch wallet balance
         await fetchBalance();
     } catch (err) {
         console.error("Wallet connection failed:", err);
+        alert("Connection request failed. Please try again.");
     }
 }
 
-// Fetch Wallet Balance
+// Fetch Wallet Balance using getBalance
 async function fetchBalance() {
     try {
-        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+        const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed"); // Connect to Solana Mainnet
         const publicKey = new PublicKey(walletAddress);
 
-        // Get balance in lamports and convert to SOL
-        const balance = await connection.getBalance(publicKey);
+        // Use getBalance RPC method to fetch balance
+        const balance = await connection.getBalance(publicKey); // Returns balance in lamports
         walletBalance = balance / 1e9; // Convert lamports to SOL
 
-        // Show wallet balance
+        // Update the wallet balance on the page
         document.getElementById("wallet-balance").textContent = `Wallet Balance: ${walletBalance.toFixed(3)} SOL`;
+        console.log("Wallet Balance (SOL):", walletBalance);
     } catch (err) {
         console.error("Failed to fetch wallet balance:", err);
+        document.getElementById("wallet-balance").textContent = "Wallet Balance: Error";
     }
 }
 
-// Add wallet balance check during betting
-function placeBet() {
-    const betInput = document.getElementById("bet-amount");
-    const betAmount = parseFloat(betInput.value);
-
-    if (!walletAddress) {
-        alert("Please connect your Phantom Wallet first!");
-        return;
-    }
-
-    if (betAmount > walletBalance) {
-        alert("Insufficient balance for this bet!");
-        return;
-    }
-
-    // Lock the bet amount and proceed with game logic
-    lockBetAmount();
-    isBetPlaced = true;
-    canContinue = false;
-
-    const betBtn = document.getElementById("bet-btn");
-    betBtn.classList.add("disabled");
-    betBtn.textContent = "Picking Side...";
-
-    const headsBtn = document.getElementById("heads-btn");
-    const tailsBtn = document.getElementById("tails-btn");
-    headsBtn.disabled = false;
-    tailsBtn.disabled = false;
-
-    document.getElementById("result").textContent = `Bet placed: ${betAmount} SOL. Pick Heads or Tails!`;
-}
-
-// Attach event listener to connect button
+// Add event listener to the Connect Wallet button
 document.getElementById("connect-wallet-btn").addEventListener("click", connectWallet);
 
